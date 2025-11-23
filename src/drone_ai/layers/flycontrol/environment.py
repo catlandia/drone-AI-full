@@ -298,6 +298,8 @@ class DroneEnv(gym.Env):
             self.current_waypoint_idx += 1
             if self.current_waypoint_idx < len(self.waypoints):
                 self.target_position = self.waypoints[self.current_waypoint_idx].copy()
+                # Reset distance tracking for new waypoint to avoid reward spikes
+                self._last_distance = np.linalg.norm(state.position - self.target_position)
 
     def _check_terminated(self) -> bool:
         """Check if episode should terminate."""

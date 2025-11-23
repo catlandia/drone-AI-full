@@ -462,14 +462,18 @@ def show_system_info():
         print("  PyTorch: NOT INSTALLED")
 
     # Check other dependencies
-    deps = ['numpy', 'gymnasium', 'opencv-python']
-    for dep in deps:
+    deps = {
+        'numpy': 'numpy',
+        'gymnasium': 'gymnasium',
+        'opencv-python': 'cv2',
+    }
+    for dep_name, import_name in deps.items():
         try:
-            mod = __import__(dep.replace('-', '_').split('-')[0])
+            mod = __import__(import_name)
             version = getattr(mod, '__version__', 'unknown')
-            print(f"  {dep}: v{version}")
+            print(f"  {dep_name}: v{version}")
         except ImportError:
-            print(f"  {dep}: NOT INSTALLED")
+            print(f"  {dep_name}: NOT INSTALLED")
 
     print()
     input("Press Enter to continue...")

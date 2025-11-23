@@ -452,10 +452,17 @@ class DroneAI:
     def get_status(self) -> FlightStatus:
         """Get current system status."""
         state = self.simulation.state
+        # Safely get current target, handling boundary conditions
+        if self.current_path and self.current_waypoint_idx < len(self.current_path):
+            current_target = self.current_path[self.current_waypoint_idx].copy()
+        elif self.current_path:
+            current_target = self.current_path[-1].copy()  # Use last waypoint
+        else:
+            current_target = np.zeros(3)
         return FlightStatus(
             state=self.state,
             position=state.position.copy(),
-            target=self.current_path[self.current_waypoint_idx].copy() if self.current_path else np.zeros(3),
+            target=current_target,
             battery_level=state.battery_level,
             current_waypoint=self.current_waypoint_idx,
             total_waypoints=len(self.current_path),

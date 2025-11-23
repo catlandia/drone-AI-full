@@ -252,7 +252,8 @@ def generate_random_obstacles(
             np.random.uniform(z_min, z_max)
         ])
 
-        obstacle_type = np.random.choice(obstacle_types)
+        # Use random index to select obstacle type (avoids np.random.choice with objects)
+        obstacle_type = obstacle_types[np.random.randint(len(obstacle_types))]
 
         if obstacle_type == ObstacleType.SPHERE:
             size = np.array([np.random.uniform(min_size, max_size)])
