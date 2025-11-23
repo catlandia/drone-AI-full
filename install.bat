@@ -16,8 +16,9 @@ echo   Installer for Windows
 echo ============================================================
 echo.
 
-REM Get script directory
+REM Get script directory (remove trailing backslash)
 set "SCRIPT_DIR=%~dp0"
+if "%SCRIPT_DIR:~-1%"=="\" set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
 REM Parse arguments
 set USE_VENV=0
@@ -129,11 +130,22 @@ echo [+] PyTorch installed
 :install_package
 echo [*] Installing drone-ai-full package...
 
+REM Change to script directory for installation
+pushd "%SCRIPT_DIR%"
+
 if %INSTALL_ALL%==1 (
-    pip install -e "%SCRIPT_DIR%[all]"
+    pip install -e ".[all]"
 ) else (
-    pip install -e "%SCRIPT_DIR%"
+    pip install -e .
 )
+
+if errorlevel 1 (
+    popd
+    echo [!] Package installation failed
+    exit /b 1
+)
+
+popd
 
 echo [+] Package installed
 
